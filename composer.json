@@ -1,0 +1,15 @@
+{
+    "name": "lyrixx/highlander",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Grégoire Pineau",
+            "email": "lyrixx@lyrixx.info"
+        }
+    ],
+    "require": {
+        "symfony/filesystem": "^2.7",
+        "symfony/process": "^2.7"
+    }
+}

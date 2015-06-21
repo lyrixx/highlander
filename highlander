@@ -1,0 +1,41 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Symfony\Component\Filesystem\LockHandler;
+use Symfony\Component\Process\Process;
+
+if ($argc == 1) {
+    echo <<<USAGE
+Usage:
+    highlander your-command with some arguments --or --options
+
+USAGE;
+
+    exit(1);
+}
+
+$lock = new LockHandler(hash('sha1', serialize($argv)));
+$locked = $lock->lock();
+
+if (false === $locked) {
+    echo "The process is already running.\n";
+
+    exit();
+}
+
+$cmdLineAsArray = $argv;
+unset($cmdLineAsArray[0]);
+
+$process = new Process(implode(' ', $cmdLineAsArray));
+$process->setTty(true);
+$process->run(function ($type, $data) {
+    if ($type == 'err') {
+        fputs(STDERR, $data);
+    } else {
+        fputs(STDOUT, $data);
+    }
+});
+
+exit($process->getExitCode());
